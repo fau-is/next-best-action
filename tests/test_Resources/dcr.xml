@@ -1,0 +1,161 @@
+<dcrgraph title="DCR" dataTypesStatus="hide"  filterLevel="-1" zoomLevel="0" formGroupStyle="Normal" formLayoutStyle="Horizontal" graphBG="#EBEBEB">
+    <specification>
+        <resources>
+            <events>
+                <event id="Activity0" >
+                    <custom>
+                        <visualization>
+                            <location xLoc="300" yLoc="75" />
+                            <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc" />
+                        </visualization>
+                        <roles>
+                            <role />
+                        </roles>
+                        <groups>
+                            <group />
+                        </groups>
+                        <phases>
+                            <phase />
+                        </phases>
+                        <eventType></eventType>
+                        <eventScope>private</eventScope>
+                        <eventTypeData></eventTypeData>
+                        <eventDescription></eventDescription>
+                        <purpose></purpose>
+                        <guide></guide>
+                        <level>1</level>
+                        <sequence>1</sequence>
+                        <costs>0</costs>
+                        <eventData></eventData>
+                        <interfaces></interfaces>
+                    </custom>
+                </event>
+                <event id="Activity0Copy" >
+                    <custom>
+                        <visualization>
+                            <location xLoc="550" yLoc="175" />
+                            <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc" />
+                        </visualization>
+                        <roles>
+                            <role />
+                        </roles>
+                        <groups>
+                            <group />
+                        </groups>
+                        <phases>
+                            <phase />
+                        </phases>
+                        <eventType></eventType>
+                        <eventScope>private</eventScope>
+                        <eventTypeData></eventTypeData>
+                        <eventDescription></eventDescription>
+                        <purpose></purpose>
+                        <guide></guide>
+                        <level>1</level>
+                        <sequence>2</sequence>
+                        <costs>0</costs>
+                        <eventData></eventData>
+                        <interfaces></interfaces>
+                    </custom>
+                </event>
+                <event id="Activity0CopyCopy" >
+                    <custom>
+                        <visualization>
+                            <location xLoc="300" yLoc="275" />
+                            <colors bg="#f9f7ed" textStroke="#000000" stroke="#cccccc" />
+                        </visualization>
+                        <roles>
+                            <role />
+                        </roles>
+                        <groups>
+                            <group />
+                        </groups>
+                        <phases>
+                            <phase />
+                        </phases>
+                        <eventType></eventType>
+                        <eventScope>private</eventScope>
+                        <eventTypeData></eventTypeData>
+                        <eventDescription></eventDescription>
+                        <purpose></purpose>
+                        <guide></guide>
+                        <level>1</level>
+                        <sequence>3</sequence>
+                        <costs>0</costs>
+                        <eventData></eventData>
+                        <interfaces></interfaces>
+                    </custom>
+                </event>
+            </events>
+            <subProcesses></subProcesses>
+            <distribution></distribution>
+            <labels>
+                <label id="1" />
+                <label id="2" />
+                <label id="3" />
+            </labels>
+            <labelMappings>
+                <labelMapping eventId="Activity0" labelId="1"/>
+                <labelMapping eventId="Activity0Copy" labelId="2"/>
+                <labelMapping eventId="Activity0CopyCopy" labelId="3"/>
+            </labelMappings>
+            <expressions></expressions>
+            <variables></variables>
+            <variableAccesses>
+                <writeAccesses />
+            </variableAccesses>
+            <custom>
+                <keywords></keywords>
+                <roles></roles>
+                <groups></groups>
+                <phases></phases>
+                <eventTypes></eventTypes>
+                <eventParameters></eventParameters>
+                <graphDetails>DCR Graph</graphDetails>
+                <graphLanguage>en-US</graphLanguage>
+                <graphDomain>process</graphDomain>
+                <graphFilters>
+                    <filteredGroups></filteredGroups>
+                    <filteredRoles></filteredRoles>
+                    <filteredPhases></filteredPhases>
+                </graphFilters>
+                <hightlighterMarkup id="HLM"></hightlighterMarkup>
+                <highlighterMarkup>
+                    <highlightLayers></highlightLayers>
+                    <highlights></highlights>
+                </highlighterMarkup>
+            </custom>
+        </resources>
+        <constraints>
+            <conditions>
+                <condition sourceId="Activity0" targetId="Activity0CopyCopy" filterLevel="0"  description=""  time=""  groups=""  />
+            </conditions>
+            <responses>
+                <response sourceId="Activity0" targetId="Activity0Copy" filterLevel="0"  description=""  time=""  groups=""  />
+            </responses>
+            <coresponses></coresponses>
+            <excludes></excludes>
+            <includes></includes>
+            <milestones>
+                <milestone sourceId="Activity0Copy" targetId="Activity0CopyCopy" filterLevel="0"  description=""  time=""  groups=""  />
+            </milestones>
+            <spawns></spawns>
+        </constraints>
+    </specification>
+    <runtime>
+        <custom>
+            <globalMarking></globalMarking>
+        </custom>
+        <marking>
+            <globalStore></globalStore>
+            <executed></executed>
+            <included>
+                <event id="Activity0" />
+                <event id="Activity0Copy" />
+                <event id="Activity0CopyCopy" />
+            </included>
+            <pendingResponses></pendingResponses>
+        </marking>
+        <custom />
+    </runtime>
+</dcrgraph>
