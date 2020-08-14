@@ -1,8 +1,21 @@
 # Prescriptive Business Process Monitoring for Recommending Next Best Actions
 
-## Paper
+## Technique
+This project contains the source code for a novel Prescriptive Business Process Monitoring technique (PrBPM) technique for recommending next best actions.
+Note the project's source code based on the source code of the paper "Predictive business process monitoring with LSTM neural networks" from Tax et al. (2017). 
 
-...
+## Paper
+If you use the code or fragments of it, please cite our paper:
+
+```
+@inprocessings{weinzierl2020nba,
+    title={Precriptive Business Process Monitoring for Recommending Next Best Actions},
+    author={Sven Weinzierl and Sebastian Dunzer and Sandra Zilker and Martin Matzner},
+    booktitle={Proceedings of the 18th International Conference on Business Process Management Forum},
+    year={2020},
+    publisher={Springer}
+}
+```
 
 ## Technical details
 
