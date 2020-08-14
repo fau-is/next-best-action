@@ -10,7 +10,7 @@ If you use the code or fragments of it, please cite our paper:
 ```
 @inprocessings{weinzierl2020nba,
     title={Precriptive Business Process Monitoring for Recommending Next Best Actions},
-    author={Sven Weinzierl and Sebastian Dunzer and Sandra Zilker and Martin Matzner},
+    author={Weinzierl, Sven and Dunzer, Sebastian and Zilker, Sandra and Matzner, Martin},
     booktitle={Proceedings of the 18th International Conference on Business Process Management Forum},
     year={2020},
     publisher={Springer}
