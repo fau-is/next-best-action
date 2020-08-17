@@ -15,7 +15,7 @@ def load():
     # evaluation
     parser.add_argument('--num_folds', default=3, type=int)
     parser.add_argument('--cross_validation', default=False, type=util.str2bool)
-    parser.add_argument('--tax_features', default=True, type=util.str2bool)  # five control-flow feature from Tax et al. (2017)
+    parser.add_argument('--tax_features', default=True, type=util.str2bool)  # five control-flow features from Tax et al. (2017)
     parser.add_argument('--batch_size_train', default=256, type=int)
     parser.add_argument('--batch_size_test', default=1, type=int)
 
