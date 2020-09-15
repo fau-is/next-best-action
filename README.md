@@ -18,7 +18,8 @@ If you use the code or fragments of it, please cite our paper:
 ```
 
 You can access the last paper [here](https://www.researchgate.net/publication/342391344_Prescriptive_Business_Process_Monitoring_for_Recommending_Next_Best_Actions).
-You can access the paper in which we presented the first prototype [here](https://library.gito.de/open-access-pdf/C12_Prescriptive_process_monitoring_-_a_technique_for_determining_next_best_actions_resub.pdf) 
+
+You can access the paper in which we presented the first prototype [here](https://library.gito.de/open-access-pdf/C12_Prescriptive_process_monitoring_-_a_technique_for_determining_next_best_actions_resub.pdf). 
 
 ## Technical details
 
