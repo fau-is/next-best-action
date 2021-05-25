@@ -1,6 +1,6 @@
 import config
-import train_dnn as train
-import test_dnn_seq as test
+import train as train
+import test as test
 import metric
 import util
 from preprocess import Preprocess_Manager
