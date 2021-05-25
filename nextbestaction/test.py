@@ -1,34 +1,27 @@
-from __future__ import division
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 import csv
 import distance
 from jellyfish._jellyfish import damerau_levenshtein_distance
-import util
+import nextbestaction.util as util
 from datetime import timedelta
 from sklearn import metrics
 import pickle
 import copy
 
 
-def predictSuffixAndTimeForPrefix(args, model, preprocess_manager, current, predict, ground_truth):
+def predict_suffix_and_time_for_prefix(args, model, preprocess_manager, current, predict, ground_truth):
     in_time = 1
 
     start = len(ground_truth["prefix_event"])
 
     for i in range(start, predict["size"]):
 
-        input_vec, num_features_all, num_features_activities = preprocess_manager.encode_test_set_add(args,
-                                                                                                      current["line"],
-                                                                                                      current["times"],
-                                                                                                      current["times3"],
-                                                                                                      current[
-                                                                                                          "line_add"],
-                                                                                                      args.batch_size_test)
+        input_vec, num_features_all, num_features_activities = preprocess_manager.encode_test_set_add(current["line"], current["times"], current["times3"], current["line_add"], args.batch_size_test)
 
         Y = model.predict(input_vec, verbose=0)
         y_event = Y[0][0]
         y_time = Y[1][0][0]
-        prediction = preprocess_manager.getSymbol(y_event)
+        prediction = preprocess_manager.get_symbol(y_event)
 
         # update of prefix (event)
         current["line"] += prediction
@@ -55,11 +48,11 @@ def predictSuffixAndTimeForPrefix(args, model, preprocess_manager, current, pred
 
         # termination; predict size = max sequence length - 1
         if prediction == '!' or len(current["line"]) == predict["size"]:
-            util.llprint('\n! termination suffix prediction ... \n')
+            util.ll_print('\n! termination suffix prediction ... \n')
             break
 
-        util.llprint("Prefix+Suffix-Time-%s: %f" % (i, ground_truth["prefix_time"] + predict["suffix_time"]))
-        util.llprint("Baseline-%s: %f" % (i, preprocess_manager.avg_time_training_cases))
+        util.ll_print("Prefix+Suffix-Time-%s: %f" % (i, ground_truth["prefix_time"] + predict["suffix_time"]))
+        util.ll_print("Baseline-%s: %f" % (i, preprocess_manager.avg_time_training_cases))
 
     if ground_truth["prefix_time"] + predict["suffix_time"] > preprocess_manager.avg_time_training_cases:
         in_time = 0
@@ -69,8 +62,7 @@ def predictSuffixAndTimeForPrefix(args, model, preprocess_manager, current, pred
     return predict, in_time, deviation_in_time
 
 
-def predictSuffixAndTimeForPrefixNextBestEvent(args, model, preprocess_manager, current_temp, predict, ground_truth,
-                                               num_corrections):
+def predict_suffix_and_time_for_prefix_next_best_event(args, model, preprocess_manager, current_temp, predict, ground_truth, num_corrections):
     # 0.) store initial prefix
     current = copy.deepcopy(current_temp)
     current_with_next_best_event = copy.deepcopy(current)
@@ -91,7 +83,7 @@ def predictSuffixAndTimeForPrefixNextBestEvent(args, model, preprocess_manager, 
         for i in range(start_sub, predict["size"]):
 
             # preprocess prefix
-            input_vec, num_features_all, num_features_activities = preprocess_manager.encode_test_set_add(args, current[
+            input_vec, num_features_all, num_features_activities = preprocess_manager.encode_test_set_add(current[
                 "line"], current["times"], current["times3"], current["line_add"], args.batch_size_test)
 
             # make prediction
@@ -100,7 +92,7 @@ def predictSuffixAndTimeForPrefixNextBestEvent(args, model, preprocess_manager, 
             # get output of predictor output
             y_event = Y[0][0]
             y_time = Y[1][0][0]
-            prediction = preprocess_manager.getSymbol(y_event)
+            prediction = preprocess_manager.get_symbol(y_event)
 
             # update of prefix (event)
             current["line"] += prediction
@@ -134,14 +126,14 @@ def predictSuffixAndTimeForPrefixNextBestEvent(args, model, preprocess_manager, 
             # termination
             if prediction == '!' or len(current["line"]) == predict["size"]:
 
-                util.llprint('\n! termination suffix prediction ... \n')
+                util.ll_print('\n! termination suffix prediction ... \n')
                 break
 
-        util.llprint("Prefix+Suffix-Time-%s-%s: %f" % (j, i, (
+        util.ll_print("Prefix+Suffix-Time-%s-%s: %f" % (j, i, (
                 current_with_next_best_event["times3"][len(current_with_next_best_event["times3"]) - 1] -
                 current_with_next_best_event["times3"][0]).total_seconds() + predict["suffix_time"]))
 
-        util.llprint("Baseline-%s-%s: %f" % (j, i, preprocess_manager.avg_time_training_cases))
+        util.ll_print("Baseline-%s-%s: %f" % (j, i, preprocess_manager.avg_time_training_cases))
 
         # 1.) update of current_with_next_best_event
         # assumption: total time in current_with_next_best_event is at the end of times2
@@ -149,13 +141,13 @@ def predictSuffixAndTimeForPrefixNextBestEvent(args, model, preprocess_manager, 
             current_with_next_best_event["times3"][0]).total_seconds() + predict[
             "suffix_time"] <= preprocess_manager.avg_time_training_cases:
 
-            util.llprint("Do not determine next best event ...")
+            util.ll_print("Do not determine next best event ...")
             # 1.1) update next best with prediction (of next event -> first prediction of suffix)
             current_with_next_best_event = copy.deepcopy(current_first_prediction)
 
         # 2.) update next best event 
         else:
-            util.llprint("Determine next best event ...")
+            util.ll_print("Determine next best event ...")
 
             num_corrections += 1
 
@@ -166,7 +158,7 @@ def predictSuffixAndTimeForPrefixNextBestEvent(args, model, preprocess_manager, 
                 'rb'))
 
             # suffix
-            current_vector = preprocess_manager.transformCurrentInstanceToSuffixVector(current, len(
+            current_vector = preprocess_manager.transform_current_instance_to_suffix_vector(current, len(
                 current_with_next_best_event["line"]), predict["size"])
             distance_candidates, index_candidates = model_candidate_selection.query(current_vector,
                                                                                     k=args.num_candidates)
@@ -174,8 +166,8 @@ def predictSuffixAndTimeForPrefixNextBestEvent(args, model, preprocess_manager, 
             # 2.2) get best candidate from training set with similar suffix
             # input params: index of candidates; length of current prefix
             # print(index_candidates)
-            current_candidate_total_time, current_candidate_event_time, current_candidate_add, current_candidate_event, current_candidate = preprocess_manager.selectBestCandidateFromTrainingSet(
-                index_candidates, len(current_with_next_best_event["line"]), current_with_next_best_event["line"], args)
+            current_candidate_total_time, current_candidate_event_time, current_candidate_add, current_candidate_event, current_candidate = preprocess_manager.select_best_candidate_from_training_set(
+                index_candidates, current_with_next_best_event["line"], args)
 
             if current_candidate == []:
                 # 2.3.1) if no candidate is conform to the DCR graphs
@@ -189,10 +181,9 @@ def predictSuffixAndTimeForPrefixNextBestEvent(args, model, preprocess_manager, 
                 current_with_next_best_event["line_add"].append(current_candidate_add)
 
         # termination
-        if len(current_with_next_best_event["line"]) == predict["size"] or '!' in current_with_next_best_event[
-            "line"]:
+        if len(current_with_next_best_event["line"]) == predict["size"] or '!' in current_with_next_best_event["line"]:
 
-            util.llprint('\n! termination prefix ... \n')
+            util.ll_print('\n! termination prefix ... \n')
             break
 
         # update of current with next best event
@@ -241,18 +232,16 @@ def test(args, preprocess_manager):
         spamwriter = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(
             ["CaseID", "Prefix length", "Ground truth", "Predicted", "Levenshtein", "Damerau", "Jaccard",
-             "Ground truth times", "Predicted times", "MAE", "In time", "Dev. in time",
-             "Num corrections"])
+             "Ground truth times", "Predicted times", "MAE", "In time", "Dev. in time", "Num corrections"])
 
-        for line, caseid, times, times2, times3, line_add in zip(lines, caseids, lines_t, lines_t2, lines_t3,
-                                                                 lines_add):
+        for line, caseid, times, times2, times3, line_add in zip(lines, caseids, lines_t, lines_t2, lines_t3, lines_add):
 
             # for each prefix of a case with a size > 1
             for prefix_size in range(2, sequence_max_length):
 
                 num_corrections = 0
 
-                util.llprint("\nPrefix size: %d\n" % prefix_size)
+                util.ll_print("\nPrefix size: %d\n" % prefix_size)
 
                 # preparation for next best event determination
                 # get prefix; one output for each prefix of a case
@@ -290,13 +279,12 @@ def test(args, preprocess_manager):
                 }
 
                 # result for each prefix of a case
-                if args.next_best_event:
+                if args.next_best_action:
 
                     # check prefix conformance
-                    if preprocess_manager.checkCandidate(args, preprocess_manager.transformNewInstance(
-                            ground_truth["prefix_event"])):
+                    if preprocess_manager.check_candidate(args, preprocess_manager.transform_new_instance(ground_truth["prefix_event"])):
 
-                        predict, in_time, deviation_in_time, num_corrections = predictSuffixAndTimeForPrefixNextBestEvent(
+                        predict, in_time, deviation_in_time, num_corrections = predict_suffix_and_time_for_prefix_next_best_event(
                             args,
                             model_suffix_prediction,
                             preprocess_manager,
@@ -307,9 +295,9 @@ def test(args, preprocess_manager):
                         break
 
                 else:
-                    predict, in_time, deviation_in_time = predictSuffixAndTimeForPrefix(args, model_suffix_prediction,
-                                                                                        preprocess_manager, current,
-                                                                                        predict, ground_truth)
+                    predict, in_time, deviation_in_time = predict_suffix_and_time_for_prefix(args, model_suffix_prediction,
+                                                                                             preprocess_manager, current,
+                                                                                             predict, ground_truth)
 
                 # termination
                 if predict["predicted"] == "":

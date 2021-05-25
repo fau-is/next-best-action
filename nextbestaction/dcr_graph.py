@@ -4,9 +4,8 @@ This module contains the DCR graph representation. It also contains the XML form
 """
 import xml.etree.ElementTree as Etree
 
-from dcr_activity import DCRActivityBase, DCRActivityNest, DCRActivity
-from dcr_conn import DCRConnection, ConnectionTypes, Condition, Milestone
-
+from nextbestaction.dcr_activity import DCRActivityBase, DCRActivityNest, DCRActivity
+from nextbestaction.dcr_conn import DCRConnection, ConnectionTypes, Condition, Milestone
 
 
 class DCRGraph(object):

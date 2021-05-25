@@ -1,6 +1,6 @@
 import os
 import argparse
-import util
+import nextbestaction.util as util
 
 
 def load():
@@ -14,22 +14,22 @@ def load():
 
     # evaluation
     parser.add_argument('--num_folds', default=3, type=int)
-    parser.add_argument('--cross_validation', default=False, type=util.str2bool)
-    parser.add_argument('--tax_features', default=True, type=util.str2bool)  # five control-flow features from Tax et al. (2017)
+    parser.add_argument('--cross_validation', default=False, type=util.str_to_bool)
+    parser.add_argument('--tax_features', default=True, type=util.str_to_bool)  # five temporal features from Tax et al. (2017)
     parser.add_argument('--batch_size_train', default=256, type=int)
     parser.add_argument('--batch_size_test', default=1, type=int)
 
     # data
-    parser.add_argument('--data_set', default="helpdesk_converted.csv")
+    parser.add_argument('--data_set', default="helpdesk_converted.csv")  # helpdesk_converted.csv, bpi2019_converted_sample.csv
     parser.add_argument('--data_dir', default="../data/")
-    parser.add_argument('--checkpoint_dir', default="./checkpoints/")
-    parser.add_argument('--result_dir', default="./results/")
-    parser.add_argument('--dcr_path', default="helpdesk_dcr.xml")
+    parser.add_argument('--checkpoint_dir', default="../checkpoints/")
+    parser.add_argument('--result_dir', default="../results/")
+    parser.add_argument('--dcr_path', default="helpdesk_dcr.xml")  # helpdesk_dcr.xml, bpi2019_dcr.xml
 
     # next best event
-    parser.add_argument('--next_best_action', default=True, type=util.str2bool)
+    parser.add_argument('--next_best_action', default=True, type=util.str_to_bool)
     parser.add_argument('--num_candidates', default=15, type=int)
-    parser.add_argument('--semantic_check', default=True, type=util.str2bool)
+    parser.add_argument('--semantic_check', default=True, type=util.str_to_bool)
 
     # gpu processing
     parser.add_argument('--gpu_ratio', default=1.0, type=float)

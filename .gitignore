@@ -100,7 +100,7 @@ ENV/
 # mypy
 .mypy_cache/
 
-/nextbestaction/checkpoints
+/checkpoints
 /nextbestaction/results
 
 # Intellij

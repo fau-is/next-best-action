@@ -2,10 +2,9 @@
 """
 The module implements the Marking of a DCR Graph
 """
-import dcr_conn
-
-from dcr_activity import DCRActivityBase
-from dcr_graph import DCRGraph
+import nextbestaction.dcr_conn
+from nextbestaction.dcr_activity import DCRActivityBase
+from nextbestaction.dcr_graph import DCRGraph
 
 
 class Marking(object):

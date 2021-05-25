@@ -1,6 +1,6 @@
 import csv
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score,confusion_matrix
-import util
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+import nextbestaction.util as util
 
 
 def calc_metrics(args):
@@ -29,18 +29,18 @@ def calc_metrics(args):
                     gt_label.append(row[2])
                     prediction.append(row[3])
             
-    util.llprint("\n\n")
-    util.llprint("Metrics:\n")  
-    util.llprint("Accuracy: %f\n" % accuracy_score(gt_label, prediction))
-    util.llprint("Precision (weighted): %f\n" % precision_score(gt_label, prediction,average='weighted'))
-    util.llprint("Recall (weighted): %f\n" % recall_score(gt_label, prediction,average='weighted'))
-    util.llprint("F1-Score (weighted): %f\n" % f1_score(gt_label, prediction,average='weighted'))
-    util.llprint("Precision (macro): %f\n" % precision_score(gt_label, prediction,average='macro'))
-    util.llprint("Recall (macro): %f\n" % recall_score(gt_label, prediction,average='macro'))
-    util.llprint("F1-Score (macro): %f\n" % f1_score(gt_label, prediction,average='macro'))
-    util.llprint("Precision (micro): %f\n" % precision_score(gt_label, prediction,average='micro'))
-    util.llprint("Recall (micro): %f\n" % recall_score(gt_label, prediction,average='micro'))
-    util.llprint("F1-Score (micro): %f\n\n" % f1_score(gt_label, prediction,average='micro'))
+    util.ll_print("\n\n")
+    util.ll_print("Metrics:\n")
+    util.ll_print("Accuracy: %f\n" % accuracy_score(gt_label, prediction))
+    util.ll_print("Precision (weighted): %f\n" % precision_score(gt_label, prediction, average='weighted'))
+    util.ll_print("Recall (weighted): %f\n" % recall_score(gt_label, prediction, average='weighted'))
+    util.ll_print("F1-Score (weighted): %f\n" % f1_score(gt_label, prediction, average='weighted'))
+    util.ll_print("Precision (macro): %f\n" % precision_score(gt_label, prediction, average='macro'))
+    util.ll_print("Recall (macro): %f\n" % recall_score(gt_label, prediction, average='macro'))
+    util.ll_print("F1-Score (macro): %f\n" % f1_score(gt_label, prediction, average='macro'))
+    util.ll_print("Precision (micro): %f\n" % precision_score(gt_label, prediction, average='micro'))
+    util.ll_print("Recall (micro): %f\n" % recall_score(gt_label, prediction, average='micro'))
+    util.ll_print("F1-Score (micro): %f\n\n" % f1_score(gt_label, prediction, average='micro'))
 
     return accuracy_score(gt_label, prediction), \
            precision_score(gt_label, prediction, average='weighted'), \

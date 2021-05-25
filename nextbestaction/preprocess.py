@@ -1,14 +1,13 @@
-from __future__ import division
 import csv
 import copy
 import numpy as np
 
 import time
 from datetime import datetime
-import util
+import nextbestaction.util as util
 from sklearn.model_selection import KFold
-from dcr_graph import DCRGraph
-from dcr_marking import Marking
+from nextbestaction.dcr_graph import DCRGraph
+from nextbestaction.dcr_marking import Marking
 
 
 class Preprocess_Manager(object):
@@ -63,7 +62,7 @@ class Preprocess_Manager(object):
         cls.data_dir = args.data_dir + args.data_set
         cls.tax_features = args.tax_features
 
-        util.llprint("Create structures...")
+        util.ll_print("Create structures...")
         lines = []  # these are all the activity seq
         caseids = []
         timeseqs = []  # time sequences (differences between two events that are next to each other)
@@ -94,10 +93,10 @@ class Preprocess_Manager(object):
 
             if check_additional_features == True:
                 if len(row) == cls.num_attributes_standard:
-                    util.llprint("No additional attributes.\n")
+                    util.ll_print("No additional attributes.\n")
                 else:
                     cls.num_features_additional = len(row) - cls.num_attributes_standard
-                    util.llprint("Number of additional attributes: %d\n" % cls.num_features_additional)
+                    util.ll_print("Number of additional attributes: %d\n" % cls.num_features_additional)
                 check_additional_features = False
 
             # creates a datetime object from timestamp in row[2]
@@ -164,13 +163,13 @@ class Preprocess_Manager(object):
             features_additional_sequences.append(features_additional_events)
         numlines += 1
 
-        util.llprint("Calculate divisors...")
+        util.ll_print("Calculate divisors...\n")
         # average time of current and previous events across all cases
         cls.divisor = np.mean([item for sublist in timeseqs for item in sublist])
-        util.llprint("divisor: %d" % cls.divisor)
+        util.ll_print("divisor: %d\n" % cls.divisor)
         # average time between current and first events across all cases
         cls.divisor2 = np.mean([item for sublist in timeseqs2 for item in sublist])
-        util.llprint("divisor2: %d" % cls.divisor2)
+        util.ll_print("divisor2: %d\n" % cls.divisor2)
 
         seq2_avg = 0
         seq2_temp = list()
@@ -184,32 +183,32 @@ class Preprocess_Manager(object):
         seq2_avg = np.mean(seq2_temp)
         cls.divisor3 = seq2_avg
 
-        util.llprint("divisor3: %d" % cls.divisor3)
+        util.ll_print("divisor3: %d\n" % cls.divisor3)
 
         # get elements per fold in case of split evaluation
-        util.llprint("Loading Data starts... \n")
+        util.ll_print("Loading Data starts... \n")
         # if args.cross_validation == False:
         cls.elems_per_fold = int(round(numlines / cls.num_folds))
 
-        util.llprint("Calc max length of sequence\n")
+        util.ll_print("Calc max length of sequence\n")
         lines = list(map(lambda x: x + '!', lines))
         cls.max_sequence_length = max(map(lambda x: len(x), lines))
-        util.llprint("Max length of sequence: %d\n" % cls.max_sequence_length)
+        util.ll_print("Max length of sequence: %d\n" % cls.max_sequence_length)
 
-        util.llprint("Start calculation of total chars and total target chars... \n")
+        util.ll_print("Start calculation of total chars and total target chars... \n")
         cls.chars = list(map(lambda x: set(x), lines))
         cls.chars = list(set().union(*cls.chars))
         cls.chars.sort()
         cls.target_chars = copy.copy(cls.chars)
         cls.chars.remove('!')
-        util.llprint("Total chars: %d, target chars: %d\n" % (len(cls.chars), len(cls.target_chars)))
+        util.ll_print("Total chars: %d, target chars: %d\n" % (len(cls.chars), len(cls.target_chars)))
 
-        util.llprint("Start creation of dicts for char handling... \n")
+        util.ll_print("Start creation of dicts for char handling... \n")
         cls.char_indices = dict((c, i) for i, c in enumerate(cls.chars))
         cls.indices_char = dict((i, c) for i, c in enumerate(cls.chars))
         cls.target_char_indices = dict((c, i) for i, c in enumerate(cls.target_chars))
         cls.target_indices_char = dict((i, c) for i, c in enumerate(cls.target_chars))
-        util.llprint("Dics for char handling created\n")
+        util.ll_print("Dics for char handling created\n")
 
         # if tax features should not be considered
         if not cls.tax_features:
@@ -305,8 +304,8 @@ class Preprocess_Manager(object):
                         next_chars_t3.append(line_t3[i])
                         next_chars_t4.append(line_t4[i])
 
-            util.llprint("\n nb sequences: %d" % len(sentences))
-            util.llprint("\n add sequences: %d" % len(sentences_add))
+            util.ll_print("\n nb sequences: %d" % len(sentences))
+            util.ll_print("\n add sequences: %d" % len(sentences_add))
         else:
             for line, line_t, line_t2, line_t3, line_t4 in zip(lines, lines_t, lines_t2, lines_t3, lines_t4):
                 for i in range(0, len(line), step):
@@ -330,7 +329,7 @@ class Preprocess_Manager(object):
                         next_chars_t3.append(line_t3[i])
                         next_chars_t4.append(line_t4[i])
 
-            util.llprint("\nnb sequences: %d" % len(sentences))
+            util.ll_print("\nnb sequences: %d" % len(sentences))
 
         # create numpy array
         X = np.zeros((len(sentences), cls.max_sequence_length, cls.num_features_all), dtype=np.float64)
@@ -430,19 +429,14 @@ class Preprocess_Manager(object):
 
             if cls.tax_features:
                 X[batch_size - 1, t + leftpad, len(cls.chars)] = t + 1  # id of event within a case
-                X[batch_size - 1, t + leftpad, len(cls.chars) + 1] = times[
-                    t]  # attribute two: the average time difference between the current and the previous event of a process instance
-                X[batch_size - 1, t + leftpad, len(cls.chars) + 2] = times2[
-                    t]  # attribute three: the average time difference between the current and the first event of a process instance
-                X[batch_size - 1, t + leftpad, len(
-                    cls.chars) + 3] = timesincemidnight.seconds  # attribute four: the time difference between  current  event  and  midnight
-                X[batch_size - 1, t + leftpad, len(cls.chars) + 4] = times3[
-                    t].weekday()  # attribute five: the  time  difference  between  current event  and  the  beginning  of  week
-
+                X[batch_size - 1, t + leftpad, len(cls.chars) + 1] = times[t]  # attribute two: the average time difference between the current and the previous event of a process instance
+                X[batch_size - 1, t + leftpad, len(cls.chars) + 2] = times2[t]  # attribute three: the average time difference between the current and the first event of a process instance
+                X[batch_size - 1, t + leftpad, len(cls.chars) + 3] = timesincemidnight.seconds  # attribute four: the time difference between  current  event  and  midnight
+                X[batch_size - 1, t + leftpad, len(cls.chars) + 4] = times3[t].weekday()  # attribute five: the  time  difference  between  current event  and  the  beginning  of  week
         return X
 
     @classmethod
-    def encode_test_set_add(self, args, sentence, times, times3, sentence_add, batch_size):
+    def encode_test_set_add(self, sentence, times, times3, sentence_add, batch_size):
 
         X = np.zeros((1, self.max_sequence_length, self.num_features_all), dtype=np.float32)
         leftpad = self.max_sequence_length - len(sentence)
@@ -477,7 +471,7 @@ class Preprocess_Manager(object):
         return X, num_features_all, num_features_activities
 
     @classmethod
-    def getSymbol(cls, predictions):
+    def get_symbol(cls, predictions):
         maxPrediction = 0
         symbol = ''
         i = 0
@@ -489,9 +483,9 @@ class Preprocess_Manager(object):
         return symbol
 
     @classmethod
-    def transformTensorToMatrix(cls, X):
+    def transform_tensor_to_matrix(cls, X):
 
-        number_cases = cls.findNumberOfCasesInTensor(X)
+        number_cases = cls.find_number_of_cases_in_tensor(X)
 
         case_id = 0
         X_case_based = np.zeros(
@@ -604,8 +598,8 @@ class Preprocess_Manager(object):
                         # update of time
                         case_time.append(cases_time[index_case][index_suffix_one_step_time])
                         index_suffix_one_step_time = index_suffix_one_step_time + 1
-                    except:
-                        print("0")
+                    except ValueError:
+                        pass
 
                 number_suffixes = number_suffixes + 1
                 cases_time_suffix.append(case_time)
@@ -617,14 +611,14 @@ class Preprocess_Manager(object):
         cls.X_case_based_suffix_time = cases_time_suffix
         cls.X_case_based_suffix_add = cases_add_suffix
 
-        util.llprint(len(cls.X_case_based_suffix))
-        util.llprint(len(cls.X_case_based_suffix_time))
-        util.llprint(len(cls.X_case_based_suffix_add))
+        util.ll_print(str(len(cls.X_case_based_suffix)))
+        util.ll_print(str(len(cls.X_case_based_suffix_time)))
+        util.ll_print(str(len(cls.X_case_based_suffix_add)))
 
         return X_case_based_suffix
 
     @classmethod
-    def findNumberOfCasesInTensor(self, X):
+    def find_number_of_cases_in_tensor(self, X):
         number_cases = 0
         for index in range(X.shape[0]):
             # index > 0 -> check retrospective the cases during the iteration
@@ -638,7 +632,7 @@ class Preprocess_Manager(object):
     # creates the input for the candidate selection
     # note current includes the prefix and the suffix
     @classmethod
-    def transformCurrentInstanceToSuffixVector(cls, current, prefix_length, predict_size):
+    def transform_current_instance_to_suffix_vector(cls, current, prefix_length, predict_size):
 
         vector_length = len(current["line"]) + len(current["line"]) * cls.num_features_additional
         vector_case_based = np.zeros(
@@ -673,7 +667,7 @@ class Preprocess_Manager(object):
         return vector_case_based_suffix_final.reshape(1, -1)
 
     @classmethod
-    def checkCandidate(cls, args, new_instance):
+    def check_candidate(cls, args, new_instance):
 
         if args.semantic_check:
             if cls.dcr is None:
@@ -694,11 +688,11 @@ class Preprocess_Manager(object):
             return True
 
     @classmethod
-    def transformNewInstance(cls, new_instance):
+    def transform_new_instance(cls, new_instance):
         return [cls.target_char_indices[element] for element in new_instance]
 
     @classmethod
-    def createNewInstance(cls, args, prefix, suffix):
+    def create_new_instance(cls, args, prefix, suffix):
 
         suffix_no_context = ""
         for index in range(0, len(suffix), 2):
@@ -712,7 +706,7 @@ class Preprocess_Manager(object):
         return [cls.target_char_indices[element] for element in new_instance]
 
     @classmethod
-    def selectBestCandidateFromTrainingSet(cls, candidates, prefix_length, prefix, args):
+    def select_best_candidate_from_training_set(cls, candidates, prefix, args):
 
         X_case_based_suffix_temp = cls.X_case_based_suffix
         X_case_based_suffix_time_temp = cls.X_case_based_suffix_time
@@ -727,15 +721,15 @@ class Preprocess_Manager(object):
         # select suffix candidate with minimum total suffix time out of k suffix candidates
         for candidate in candidates[0]:
 
-            new_instance = cls.createNewInstance(args, prefix, X_case_based_suffix_temp[candidate])
-            if cls.checkCandidate(args, new_instance):
+            new_instance = cls.create_new_instance(args, prefix, X_case_based_suffix_temp[candidate])
+            if cls.check_candidate(args, new_instance):
 
                 if current_candidate == []:
                     current_candidate = X_case_based_suffix_temp[candidate]
                     current_candidate_event_time = X_case_based_suffix_time_temp[candidate][0]
                     current_candidate_total_time = sum(X_case_based_suffix_time_temp[candidate])
                     current_candidate_add = X_case_based_suffix_add_temp[candidate][0]
-                    # note, before, we added 1 to the column index to differ between no value and first element of dict 'target_indices_char'
+                    # Note: before, we added 1 to the column index to differ between no value and first element of dict 'target_indices_char'
                     current_candidate_event = cls.target_indices_char[current_candidate[0] - 1]
 
                 else:
@@ -744,7 +738,7 @@ class Preprocess_Manager(object):
                         current_candidate_event_time = X_case_based_suffix_time_temp[candidate][0]
                         current_candidate_total_time = sum(X_case_based_suffix_time_temp[candidate])
                         current_candidate_add = X_case_based_suffix_add_temp[candidate][0]
-                        # note, before, we added 1 to the column index to differ between no value and first element of dict 'target_indices_char'
+                        # Note: before, we added 1 to the column index to differ between no value and first element of dict 'target_indices_char'
                         current_candidate_event = cls.target_indices_char[current_candidate[0] - 1]
 
         return current_candidate_total_time, current_candidate_event_time, current_candidate_add, current_candidate_event, current_candidate
