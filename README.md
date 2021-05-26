@@ -33,4 +33,4 @@ Table 1: Times for training and testing (in seconds).
 | Training time | 132.10   | 125.02 | 125.06 | 100.07 | 355.66   | 757.17  | 743.00  | 750.10  |
 | Testing time  | 310.20   | 905.43 | 904.26 | 976.88 | 3609.98  | 6829.20 | 4652.48 | 5861.92 |
 
-We implemented our technique in Python 3.7 and used the deep-learning framework TensorFlow 1.14.1 to build deep learning models. 
+We implemented our technique in Python 3.6.8 and used the deep-learning framework TensorFlow 2.3 to build deep learning models. 
