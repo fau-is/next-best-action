@@ -2,7 +2,7 @@
 """
 The module implements the Marking of a DCR Graph
 """
-import nextbestaction.dcr_conn
+import nextbestaction.dcr_conn as dcr_conn
 from nextbestaction.dcr_activity import DCRActivityBase
 from nextbestaction.dcr_graph import DCRGraph
 

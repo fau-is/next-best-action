@@ -41,7 +41,6 @@ class DCRConnection(ABC):
         self.StartNode = start_node
         self.EndNode = end_node
 
-
     @staticmethod
     def create_connection(start_node, end_node, connection_type: ConnectionTypes):
         """

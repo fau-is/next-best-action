@@ -2,7 +2,7 @@
 
 ## Technique
 This project contains the source code for a novel Prescriptive Business Process Monitoring technique (PrBPM) technique for recommending next best actions.
-Note the project's source code based on the source code of the paper "Predictive business process monitoring with LSTM neural networks" from Tax et al. (2017). 
+Note: The project's source code based on the source code of the paper "Predictive business process monitoring with LSTM neural networks" from Tax et al. (2017). 
 
 ## Paper
 If you use the code or fragments of it, please cite our paper:
@@ -23,7 +23,7 @@ You can access the paper in which we presented the first prototype [here](https:
 
 ## Technical details
 
-We conducted all experiments on a workstation with 12 CPUs, 128 GB RAM, and a single GPU NVIDIA Quadro RXT6000.
+We conducted all experiments on a workstation with 12 CPUs, 128 GB RAM.
 In Table 1, we present the times for training and testing of the baseline and our prescriptive business process monitoring technique.
 
 Table 1: Times for training and testing (in seconds).
