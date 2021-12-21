@@ -50,7 +50,7 @@ def predict_suffix_and_time_for_prefix(model, preprocess_manager, current, predi
         print("Baseline-%s: %f" % (i, preprocess_manager.avg_time_training_cases))
 
     if ground_truth["prefix_time"] + predict["suffix_time"] > preprocess_manager.avg_time_training_cases:
-        in_50ime = 0
+        in_time = 0
     deviation_in_time = (ground_truth["prefix_time"] + predict["suffix_time"]) / preprocess_manager.avg_time_training_cases
 
     return predict, in_time, deviation_in_time
